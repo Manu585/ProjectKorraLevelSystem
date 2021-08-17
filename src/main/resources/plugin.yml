@@ -1,0 +1,12 @@
+name: ProjectKorraLevelSystem
+version: ${project.version}
+main: me.manu.projectkorralevelsystem.ProjectKorraLevelSystem
+api-version: 1.16
+authors: [ Manu, Finn ]
+depend: [ ProjectKorra ]
+description: A ProjectKorra levelling system plugin
+
+commands:
+  projectkorra:
+    aliases: [b,bending,mtla,tla,korra,pk,bend]
+    usage: /<command>
