@@ -12,12 +12,13 @@ public class RpPlayerXPChangeEvent extends Event implements Cancellable {
     private boolean cancelled;
     private RpPlayer rpPlayer;
     private double xp;
+    private double addedXP;
 
-    public RpPlayerXPChangeEvent(RpPlayer player, double xp) {
+    public RpPlayerXPChangeEvent(RpPlayer player, double xp, double addedXP) {
         this.rpPlayer = player;
         this.xp = xp;
+        this.addedXP = addedXP;
         this.cancelled = false;
-        cancelled = false;
     }
 
     public RpPlayer getPlayer() {
@@ -26,6 +27,10 @@ public class RpPlayerXPChangeEvent extends Event implements Cancellable {
 
     public double getXp() {
         return xp;
+    }
+
+    public double getGainedXp() {
+        return addedXP;
     }
 
     @Override

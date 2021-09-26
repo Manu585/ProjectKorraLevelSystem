@@ -2,6 +2,7 @@ package me.manu.projectkorralevelsystem.rpplayer;
 
 import me.manu.projectkorralevelsystem.events.RpPlayerLevelChangeEvent;
 import me.manu.projectkorralevelsystem.events.RpPlayerXPChangeEvent;
+import me.manu.projectkorralevelsystem.methods.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -18,12 +19,14 @@ public class RpPlayer {
     private int level;
     private double XP;
     private double modifier;
+    private double nextLevelXP;
 
     public RpPlayer(final UUID uuid, final double xp, final int level) {
         this.uuid = uuid;
         this.XP = xp;
         this.level = level;
         this.player = Bukkit.getPlayer(uuid);
+        this.nextLevelXP = Methods.nextLevel(this.level);
     }
 
     public UUID getUUID() {
@@ -42,8 +45,12 @@ public class RpPlayer {
         return modifier;
     }
 
+    public double getNextLevelXP() {
+        return this.nextLevelXP;
+    }
+
     public void addLevel(int level) {
-        RpPlayerLevelChangeEvent e = new RpPlayerLevelChangeEvent(this, this.level);
+        RpPlayerLevelChangeEvent e = new RpPlayerLevelChangeEvent(this, this.level, level);
         Bukkit.getServer().getPluginManager().callEvent(e);
         if (!e.isCancelled()) {
             this.level += level;
@@ -51,15 +58,15 @@ public class RpPlayer {
     }
 
     public void setLevel(int level) {
-        RpPlayerLevelChangeEvent e = new RpPlayerLevelChangeEvent(this, this.level);
+        RpPlayerLevelChangeEvent e = new RpPlayerLevelChangeEvent(this, this.level, level);
         Bukkit.getServer().getPluginManager().callEvent(e);
         if (!e.isCancelled()) {
-            this.level += level;
+            this.level = level;
         }
     }
 
     public void addXP(double xp) {
-        RpPlayerXPChangeEvent e = new RpPlayerXPChangeEvent(this, XP);
+        RpPlayerXPChangeEvent e = new RpPlayerXPChangeEvent(this, XP, xp);
         Bukkit.getServer().getPluginManager().callEvent(e);
         if (!e.isCancelled()) {
             this.XP += xp;
@@ -72,10 +79,10 @@ public class RpPlayer {
      *
      **/
     public void setXP(double xp) {
-        RpPlayerXPChangeEvent e = new RpPlayerXPChangeEvent(this, XP);
+        RpPlayerXPChangeEvent e = new RpPlayerXPChangeEvent(this, XP, xp);
         Bukkit.getServer().getPluginManager().callEvent(e);
         if (!e.isCancelled()) {
-            this.XP += xp;
+            this.XP = xp;
         }
     }
 
@@ -85,6 +92,10 @@ public class RpPlayer {
 
     public void setModifier(double mod) {
         this.modifier = mod;
+    }
+
+    public void CreateLevelUp() {
+        this.XP = - getNextLevelXP();
     }
 
     public static void registerRpPlayer(RpPlayer player) {

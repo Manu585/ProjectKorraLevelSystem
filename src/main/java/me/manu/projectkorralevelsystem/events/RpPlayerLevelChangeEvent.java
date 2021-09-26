@@ -12,12 +12,13 @@ public class RpPlayerLevelChangeEvent extends Event implements Cancellable {
     private boolean cancelled;
     private RpPlayer rpPlayer;
     private int level;
+    private int addedLevel;
 
-    public RpPlayerLevelChangeEvent(RpPlayer player, int level) {
+    public RpPlayerLevelChangeEvent(RpPlayer player, int level, int addedLevel) {
         this.rpPlayer = player;
         this.level = level;
+        this.addedLevel = addedLevel;
         this.cancelled = false;
-        cancelled = false;
     }
 
     public RpPlayer getPlayer() {
@@ -26,6 +27,10 @@ public class RpPlayerLevelChangeEvent extends Event implements Cancellable {
 
     public int getLevel() {
         return level;
+    }
+
+    public int getAddedLevel() {
+        return addedLevel;
     }
 
     @Override

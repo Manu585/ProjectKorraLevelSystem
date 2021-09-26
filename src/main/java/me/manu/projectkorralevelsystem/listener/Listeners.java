@@ -6,6 +6,7 @@ import com.projectkorra.projectkorra.attribute.AttributeModifier;
 import com.projectkorra.projectkorra.event.AbilityStartEvent;
 import me.manu.projectkorralevelsystem.events.RpPlayerLevelChangeEvent;
 import me.manu.projectkorralevelsystem.events.RpPlayerXPChangeEvent;
+import me.manu.projectkorralevelsystem.levelmanager.LevelManager;
 import me.manu.projectkorralevelsystem.methods.Methods;
 import me.manu.projectkorralevelsystem.rpplayer.RpPlayer;
 import me.manu.projectkorralevelsystem.util.DatabaseUtil;
@@ -16,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -30,23 +30,8 @@ public class Listeners implements Listener {
         Player p = ability.getPlayer();
         RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
 
-        Methods.sendBar(p.getUniqueId());
-        rpPlayer.addXP(1);
-
-        //This part is made by Simplicitee
-        try {
-            for (Field field : ability.getClass().getDeclaredFields()) {
-                if (!field.isAnnotationPresent(Attribute.class)) {
-                    continue;
-                }
-
-                String attribute = field.getAnnotation(Attribute.class).value();
-
-                    ability.addAttributeModifier(attribute, Methods.getPowerLevel(rpPlayer.getUUID()), AttributeModifier.MULTIPLICATION);
-                    }
-                } catch (Exception ignored) {
-            }
-        }
+        p.sendMessage("Xp you need to level up: " + rpPlayer.getNextLevelXP());
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -72,17 +57,32 @@ public class Listeners implements Listener {
         RpPlayer rp = e.getPlayer();
         Player p = Bukkit.getPlayer(rp.getUUID());
         assert p != null;
+        Methods.sendBar(p.getUniqueId(), e.getGainedXp());
+        LevelManager.calculateLevel(p.getUniqueId());
     }
 
     @EventHandler
     public void RpPlayerLevelChange(RpPlayerLevelChangeEvent e) {
         RpPlayer rpPlayer = e.getPlayer();
         Player p = Bukkit.getPlayer(rpPlayer.getUUID());
-        int level = e.getLevel();
         assert p != null;
+    }
 
-        p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "--Level up!--");
-        p.sendMessage(ChatColor.YELLOW + "You are now level " + ChatColor.GOLD + level);
-        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5, 10);
+    @EventHandler
+    public void RpPlayerLevelUp(RpPlayerLevelChangeEvent e) {
+        RpPlayer rpPlayer = e.getPlayer();
+        Player p = Bukkit.getPlayer(rpPlayer.getUUID());
+        int level = e.getLevel();
+        int addedlvl = e.getAddedLevel();
+        
+        assert p != null;
+        if (level < addedlvl) {
+            p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "--Level up!--");
+            p.sendMessage(ChatColor.YELLOW + "You are now level " + ChatColor.GOLD + addedlvl);
+            p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5, 10);
+        } else {
+            p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "--Level down!--");
+            p.sendMessage(ChatColor.YELLOW + "You are now level " + ChatColor.GOLD + level);
+        }
     }
 }

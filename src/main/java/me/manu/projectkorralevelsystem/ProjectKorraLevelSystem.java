@@ -1,6 +1,9 @@
 package me.manu.projectkorralevelsystem;
 
-import me.manu.projectkorralevelsystem.commands.Commands;
+import me.manu.projectkorralevelsystem.commands.LevelCommand;
+import me.manu.projectkorralevelsystem.commands.RpCommandBase;
+import me.manu.projectkorralevelsystem.commands.XpCommand;
+import me.manu.projectkorralevelsystem.configuration.ConfigManager;
 import me.manu.projectkorralevelsystem.listener.Listeners;
 import me.manu.projectkorralevelsystem.rpplayer.RpPlayer;
 import me.manu.projectkorralevelsystem.util.DatabaseUtil;
@@ -18,9 +21,17 @@ public final class ProjectKorraLevelSystem extends JavaPlugin {
     public void onEnable() {
         instance = this;
         DatabaseUtil.createDB();
+
+        new ConfigManager();
         startMessage();
         registerEvents();
-        new Commands(this);
+        registerCommands();
+    }
+
+    private void registerCommands() {
+        new RpCommandBase();
+        new XpCommand();
+        new LevelCommand();
     }
 
     @Override
