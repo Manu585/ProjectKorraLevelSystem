@@ -29,18 +29,38 @@ public class RpPlayer {
         this.nextLevelXP = Methods.nextLevel(this.level);
     }
 
+    /**
+     *
+     * @return the players UUID
+     *
+     */
     public UUID getUUID() {
         return uuid;
     }
 
+    /**
+     *
+     * @return the players XP
+     *
+     */
     public double getXp() {
         return XP;
     }
 
+    /**
+     *
+     * @return the level of the player
+     *
+     */
     public int getLevel() {
         return level;
     }
 
+    /**
+     *
+     * @return the modifier of the playe
+     *
+     */
     public double getModifier() {
         return modifier;
     }
@@ -49,6 +69,11 @@ public class RpPlayer {
         return this.nextLevelXP;
     }
 
+    /**
+     * Add level to a player
+     * @param level
+     *
+     */
     public void addLevel(int level) {
         RpPlayerLevelChangeEvent e = new RpPlayerLevelChangeEvent(this, this.level, level);
         Bukkit.getServer().getPluginManager().callEvent(e);
@@ -57,6 +82,11 @@ public class RpPlayer {
         }
     }
 
+    /**
+     * Set the level of a player
+     * @param level
+     *
+     */
     public void setLevel(int level) {
         RpPlayerLevelChangeEvent e = new RpPlayerLevelChangeEvent(this, this.level, level);
         Bukkit.getServer().getPluginManager().callEvent(e);
@@ -65,6 +95,11 @@ public class RpPlayer {
         }
     }
 
+    /**
+     * Add XP to the player
+     * @param xp
+     *
+     **/
     public void addXP(double xp) {
         RpPlayerXPChangeEvent e = new RpPlayerXPChangeEvent(this, XP, xp);
         Bukkit.getServer().getPluginManager().callEvent(e);
@@ -74,7 +109,7 @@ public class RpPlayer {
     }
 
     /**
-     * To set the xp of a player.
+     * Set the XP of the player.
      * @param xp
      *
      **/
@@ -86,10 +121,20 @@ public class RpPlayer {
         }
     }
 
+    /**
+     * Make the players bending stronger
+     * @param mod
+     *
+     */
     public void addModifier(double mod) {
         this.modifier += mod;
     }
 
+    /**
+     * Make the players bending stronger
+     * @param mod
+     *
+     */
     public void setModifier(double mod) {
         this.modifier = mod;
     }
