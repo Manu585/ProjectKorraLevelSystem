@@ -1,11 +1,9 @@
 package me.manu.projectkorralevelsystem.listener;
 
 import com.projectkorra.projectkorra.ability.CoreAbility;
-import com.projectkorra.projectkorra.attribute.Attribute;
-import com.projectkorra.projectkorra.attribute.AttributeModifier;
 import com.projectkorra.projectkorra.event.AbilityStartEvent;
-import me.manu.projectkorralevelsystem.events.RpPlayerLevelChangeEvent;
-import me.manu.projectkorralevelsystem.events.RpPlayerXPChangeEvent;
+import me.manu.projectkorralevelsystem.rpevents.RpPlayerLevelChangeEvent;
+import me.manu.projectkorralevelsystem.rpevents.RpPlayerXPChangeEvent;
 import me.manu.projectkorralevelsystem.levelmanager.LevelManager;
 import me.manu.projectkorralevelsystem.methods.Methods;
 import me.manu.projectkorralevelsystem.rpplayer.RpPlayer;
@@ -19,8 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.lang.reflect.Field;
 
 public class Listeners implements Listener {
 
@@ -40,11 +36,13 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        Player p = e.getPlayer();
-        RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
-        if (rpPlayer == null) return;
-        DatabaseUtil.savePlayer(rpPlayer);
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        RpPlayer rpPlayer = RpPlayer.getRpPlayer(player.getUniqueId());
+        if (rpPlayer != null) {
+            DatabaseUtil.savePlayer(rpPlayer);
+            RpPlayer.getPlayers().remove(player.getUniqueId());
+        }
     }
 
     @EventHandler

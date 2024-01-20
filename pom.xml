@@ -10,8 +10,8 @@
     <packaging>jar</packaging>
 
     <name>ProjectKorraLevelSystem</name>
-
     <description>A ProjectKorra leveling system plugin for the RavCraft Minecraft server</description>
+
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,7 +40,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <outputFile>C:\Users\ander\OneDrive\Desktop\PluginTestingServer\plugins\ProjectKorraLevelSystem-1.0.1.jar</outputFile>
+                            <outputFile>C:\Users\manue\Desktop\Server\plugins\ProjectKorraLevelSystem-1.0.0.jar</outputFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -56,8 +56,8 @@
 
     <repositories>
         <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>papermc-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>sonatype</id>
@@ -71,15 +71,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.ProjectKorra</groupId>
             <artifactId>ProjectKorra</artifactId>
-            <version>1.9.2</version>
+            <version>v1.11.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

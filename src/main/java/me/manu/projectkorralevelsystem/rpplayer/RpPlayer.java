@@ -1,7 +1,7 @@
 package me.manu.projectkorralevelsystem.rpplayer;
 
-import me.manu.projectkorralevelsystem.events.RpPlayerLevelChangeEvent;
-import me.manu.projectkorralevelsystem.events.RpPlayerXPChangeEvent;
+import me.manu.projectkorralevelsystem.rpevents.RpPlayerLevelChangeEvent;
+import me.manu.projectkorralevelsystem.rpevents.RpPlayerXPChangeEvent;
 import me.manu.projectkorralevelsystem.methods.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,12 +13,12 @@ import java.util.UUID;
 public class RpPlayer {
 
     private static final Map<UUID, RpPlayer> PLAYERS = new HashMap<>();
+    private final Map<String, AbilityAttributes> abilityAttributesMap = new HashMap<>();
 
     private final Player player;
     private final UUID uuid;
     private int level;
     private double XP;
-    private double modifier;
     private double nextLevelXP;
 
     public RpPlayer(final UUID uuid, final double xp, final int level) {
@@ -54,15 +54,6 @@ public class RpPlayer {
      */
     public int getLevel() {
         return level;
-    }
-
-    /**
-     *
-     * @return the modifier of the playe
-     *
-     */
-    public double getModifier() {
-        return modifier;
     }
 
     public double getNextLevelXP() {
@@ -121,28 +112,6 @@ public class RpPlayer {
         }
     }
 
-    /**
-     * Make the players bending stronger
-     * @param mod
-     *
-     */
-    public void addModifier(double mod) {
-        this.modifier += mod;
-    }
-
-    /**
-     * Make the players bending stronger
-     * @param mod
-     *
-     */
-    public void setModifier(double mod) {
-        this.modifier = mod;
-    }
-
-    public void CreateLevelUp() {
-        this.XP = - getNextLevelXP();
-    }
-
     public static void registerRpPlayer(RpPlayer player) {
         PLAYERS.put(player.getUUID(), player);
     }
@@ -157,5 +126,82 @@ public class RpPlayer {
 
     public static Map<UUID, RpPlayer> getPlayers() {
         return PLAYERS;
+    }
+
+    public String getGainedXp() {
+        double xp = this.getXp();
+        double nextLevelXP = this.getNextLevelXP();
+        return String.valueOf(nextLevelXP - xp);
+    }
+
+    //ATTRIBUTE PART
+
+    /**
+     * Set the ability attributes for a specific ability.
+     *
+     * @param abilityName Name of the ability (case-insensitive).
+     * @param speed       Speed attribute value.
+     * @param damage      Damage attribute value.
+     * @param range       Range attribute value.
+     */
+    public void setAbilityAttributes(String abilityName, int speed, int damage, int range) {
+        abilityAttributesMap.put(abilityName.toLowerCase(), new AbilityAttributes(speed, damage, range));
+    }
+
+    /**
+     * Get the speed attribute for a specific ability.
+     *
+     * @param abilityName Name of the ability (case-insensitive).
+     * @return Speed attribute value.
+     */
+    public int getAbilitySpeed(String abilityName) {
+        AbilityAttributes attributes = abilityAttributesMap.get(abilityName.toLowerCase());
+        return (attributes != null) ? attributes.getSpeed() : 0;
+    }
+
+    /**
+     * Get the damage attribute for a specific ability.
+     *
+     * @param abilityName Name of the ability (case-insensitive).
+     * @return Damage attribute value.
+     */
+    public int getAbilityDamage(String abilityName) {
+        AbilityAttributes attributes = abilityAttributesMap.get(abilityName.toLowerCase());
+        return (attributes != null) ? attributes.getDamage() : 0;
+    }
+
+    /**
+     * Get the range attribute for a specific ability.
+     *
+     * @param abilityName Name of the ability (case-insensitive).
+     * @return Range attribute value.
+     */
+    public int getAbilityRange(String abilityName) {
+        AbilityAttributes attributes = abilityAttributesMap.get(abilityName.toLowerCase());
+        return (attributes != null) ? attributes.getRange() : 0;
+    }
+
+    private static class AbilityAttributes {
+        private final int speed;
+        private final int damage;
+        private final int range;
+
+        public AbilityAttributes(int speed, int damage, int range) {
+            this.speed = speed;
+            this.damage = damage;
+            this.range = range;
+        }
+
+        public int getSpeed() {
+            return speed;
+        }
+
+        public int getDamage() {
+            return damage;
+        }
+
+        public int getRange() {
+            return range;
+        }
     }
 }

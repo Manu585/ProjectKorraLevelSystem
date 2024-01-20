@@ -1,7 +1,7 @@
 name: ProjectKorraLevelSystem
 version: ${project.version}
 main: me.manu.projectkorralevelsystem.ProjectKorraLevelSystem
-api-version: 1.16
-authors: [ Manu, Finn ]
+api-version: '1.20'
+author: "Manu"
 depend: [ ProjectKorra ]
-description: A ProjectKorra levelling system plugin
+description: "A ProjectKorra levelling system plugin"

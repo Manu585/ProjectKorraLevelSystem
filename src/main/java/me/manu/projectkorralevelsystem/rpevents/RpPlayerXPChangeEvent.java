@@ -1,23 +1,23 @@
-package me.manu.projectkorralevelsystem.events;
+package me.manu.projectkorralevelsystem.rpevents;
 
 import me.manu.projectkorralevelsystem.rpplayer.RpPlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class RpPlayerLevelChangeEvent extends Event implements Cancellable {
+public class RpPlayerXPChangeEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean cancelled;
     private RpPlayer rpPlayer;
-    private int level;
-    private int addedLevel;
+    private double xp;
+    private double addedXP;
 
-    public RpPlayerLevelChangeEvent(RpPlayer player, int level, int addedLevel) {
+    public RpPlayerXPChangeEvent(RpPlayer player, double xp, double addedXP) {
         this.rpPlayer = player;
-        this.level = level;
-        this.addedLevel = addedLevel;
+        this.xp = xp;
+        this.addedXP = addedXP;
         this.cancelled = false;
     }
 
@@ -25,12 +25,12 @@ public class RpPlayerLevelChangeEvent extends Event implements Cancellable {
         return rpPlayer;
     }
 
-    public int getLevel() {
-        return level;
+    public double getXp() {
+        return xp;
     }
 
-    public int getAddedLevel() {
-        return addedLevel;
+    public double getGainedXp() {
+        return addedXP;
     }
 
     @Override
