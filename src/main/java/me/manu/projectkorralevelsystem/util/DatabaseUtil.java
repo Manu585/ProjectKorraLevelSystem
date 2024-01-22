@@ -27,7 +27,7 @@ public class DatabaseUtil {
                 queryBuilder.append("xp DOUBLE DEFAULT 0,");
                 queryBuilder.append("level INT DEFAULT 1,");
 
-                Set<String> addedAbilities = new HashSet<>(); // Keep track of added abilities
+                Set<String> addedAbilities = new HashSet<>();
 
                 for (CoreAbility ability : abilities) {
                     String abilityName = ability.getName().toLowerCase();
@@ -41,8 +41,8 @@ public class DatabaseUtil {
                     }
                 }
 
-                queryBuilder.deleteCharAt(queryBuilder.length() - 1); // Remove the trailing comma
-                queryBuilder.append(")");  // Add closing parenthesis
+                queryBuilder.deleteCharAt(queryBuilder.length() - 1);
+                queryBuilder.append(")");
                 DBConnection.sql.modifyQuery(queryBuilder.toString(), false);
             } else { // SQLite
                 StringBuilder queryBuilder = new StringBuilder("CREATE TABLE `pk_rpplayer` (");
@@ -69,8 +69,8 @@ public class DatabaseUtil {
                     e.printStackTrace();
                 }
 
-                queryBuilder.deleteCharAt(queryBuilder.length() - 1); // Remove the trailing comma
-                queryBuilder.append(")");  // Add closing parenthesis
+                queryBuilder.deleteCharAt(queryBuilder.length() - 1);
+                queryBuilder.append(")");
                 DBConnection.sql.modifyQuery(queryBuilder.toString(), false);
             }
             ProjectKorraLevelSystem.getInstance().getLogger().info("Database created!");
@@ -93,10 +93,8 @@ public class DatabaseUtil {
                 return createPlayer(uuid, 0, 1);
             }
         } catch (SQLException e) {
-            // Log the exception or print it to console
             e.printStackTrace();
         } finally {
-            // Close the ResultSet and any other resources in a final block
             try {
                 if (rs2 != null) {
                     rs2.close();
@@ -119,7 +117,7 @@ public class DatabaseUtil {
         queryBuilder.append(") VALUES ('").append(uuid).append("', ").append(xp).append(", ").append(level);
 
         for (CoreAbility ability : abilities) {
-            queryBuilder.append(", 1, 1, 1");  // Default values for speed, damage, range
+            queryBuilder.append(", 1, 1, 1");
         }
 
         queryBuilder.append(")");
@@ -144,7 +142,7 @@ public class DatabaseUtil {
             queryBuilder.append(abilityName).append("_range = ").append(rpPlayer.getAbilityRange(abilityName)).append(", ");
         }
 
-        queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length()); // Remove the trailing comma and space
+        queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length());
         queryBuilder.append(" WHERE uuid = '").append(rpPlayer.getUUID()).append("'");
 
         DBConnection.sql.modifyQuery(queryBuilder.toString(), false);
