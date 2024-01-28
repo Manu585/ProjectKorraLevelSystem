@@ -2,12 +2,14 @@ package me.manu.projectkorralevelsystem.listener;
 
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.event.AbilityStartEvent;
+import me.manu.projectkorralevelsystem.ProjectKorraLevelSystem;
+import me.manu.projectkorralevelsystem.levelmanager.LevelManager;
+import me.manu.projectkorralevelsystem.menu.MenuManager;
+import me.manu.projectkorralevelsystem.methods.Methods;
 import me.manu.projectkorralevelsystem.rpevents.RpPlayerLevelChangeEvent;
 import me.manu.projectkorralevelsystem.rpevents.RpPlayerXPChangeEvent;
-import me.manu.projectkorralevelsystem.levelmanager.LevelManager;
-import me.manu.projectkorralevelsystem.methods.Methods;
 import me.manu.projectkorralevelsystem.rpplayer.RpPlayer;
-import me.manu.projectkorralevelsystem.util.DatabaseUtil;
+import me.manu.projectkorralevelsystem.util.JsonDatabase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -26,23 +28,34 @@ public class Listeners implements Listener {
         Player p = ability.getPlayer();
         RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
 
-        p.sendMessage("Xp you need to level up: " + rpPlayer.getNextLevelXP());
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        DatabaseUtil.getPlayer(p.getUniqueId());
+        JsonDatabase db = new JsonDatabase();
+        db.addAttribute(p.getUniqueId(), "FireBlast", "speed", 1.5);
+        if (!db.playerExists(RpPlayer.getRpPlayer(p.getUniqueId()))) {
+            RpPlayer rpPlayer = new RpPlayer(p.getUniqueId(), 0.0, 1);
+            RpPlayer.registerRpPlayer(rpPlayer);
+            db.addPlayer(rpPlayer);
+        } else {
+            ProjectKorraLevelSystem.getInstance().getLogger().info("Player already exists in database!");
+        }
+
+
+        p.openInventory(MenuManager.mainMenu.getInventory());
+        //DatabaseUtil.getPlayer(p.getUniqueId());
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         RpPlayer rpPlayer = RpPlayer.getRpPlayer(player.getUniqueId());
-        if (rpPlayer != null) {
-            DatabaseUtil.savePlayer(rpPlayer);
-            RpPlayer.getPlayers().remove(player.getUniqueId());
-        }
+//        if (rpPlayer != null) {
+//            DatabaseUtil.savePlayer(rpPlayer);
+//            RpPlayer.getPlayers().remove(player.getUniqueId());
+//        }
     }
 
     @EventHandler

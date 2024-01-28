@@ -1,11 +1,9 @@
 package me.manu.projectkorralevelsystem;
 
 import me.manu.projectkorralevelsystem.listener.Listeners;
-import me.manu.projectkorralevelsystem.rpplayer.RpPlayer;
-import me.manu.projectkorralevelsystem.util.DatabaseUtil;
-import org.bukkit.Bukkit;
+import me.manu.projectkorralevelsystem.menu.MenuManager;
+import me.manu.projectkorralevelsystem.util.JsonDatabase;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ProjectKorraLevelSystem extends JavaPlugin {
@@ -16,9 +14,11 @@ public final class ProjectKorraLevelSystem extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        DatabaseUtil.createDB();
+        MenuManager.initMenus();
+//      DatabaseUtil.createDB();
+        JsonDatabase.createDB();
 
-//new ConfigManager();
+//      new ConfigManager();
         startMessage();
         registerEvents();
         registerCommands();
@@ -30,11 +30,11 @@ public final class ProjectKorraLevelSystem extends JavaPlugin {
     @Override
     public void onDisable() {
         stopMessage();
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
-            assert rpPlayer != null;
-            DatabaseUtil.savePlayer(rpPlayer);
-        }
+//        for (Player p : Bukkit.getOnlinePlayers()) {
+//            RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
+//            assert rpPlayer != null;
+//            DatabaseUtil.savePlayer(rpPlayer);
+//        }
     }
 
     void registerEvents() {

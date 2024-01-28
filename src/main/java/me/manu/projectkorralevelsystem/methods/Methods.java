@@ -20,11 +20,6 @@ public class Methods {
         return level * level * 100;
     }
 
-    public static boolean ReadyToLevelUp(UUID uuid) {
-        RpPlayer rpPlayer = RpPlayer.getRpPlayer(uuid);
-        return rpPlayer.getXp() >= rpPlayer.getNextLevelXP();
-    }
-
     public static String getChatColor(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }

@@ -32,19 +32,4 @@ public class MessagesUtil {
         return PREFIX + p.getName() + " has " + rpPlayer.getXp() + " XP!";
     }
 
-    public String getXPAddedMessage() {
-        return PREFIX + "You gained " + rpPlayer.getGainedXp() + " XP!";
-    }
-
-    public String getXPAddedMessage(Player p) {
-        return PREFIX + p.getName() + " gained " + rpPlayer.getGainedXp() + " XP!";
-    }
-
-    public String getXPNextLevelMessage() {
-        return PREFIX + "You have " + rpPlayer.getNextLevelXP() + " XP to the next level!";
-    }
-
-    public String getXPNextLevelMessage(Player p) {
-        return PREFIX + p.getName() + " has " + rpPlayer.getNextLevelXP() + " XP to the next level!";
-    }
 }

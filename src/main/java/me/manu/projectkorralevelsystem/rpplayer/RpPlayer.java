@@ -1,8 +1,8 @@
 package me.manu.projectkorralevelsystem.rpplayer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import me.manu.projectkorralevelsystem.rpevents.RpPlayerLevelChangeEvent;
 import me.manu.projectkorralevelsystem.rpevents.RpPlayerXPChangeEvent;
-import me.manu.projectkorralevelsystem.methods.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,21 +12,19 @@ import java.util.UUID;
 
 public class RpPlayer {
 
-    private static final Map<UUID, RpPlayer> PLAYERS = new HashMap<>();
-    private final Map<String, AbilityAttributes> abilityAttributesMap = new HashMap<>();
-
+    @JsonIgnore
+    private static Map<UUID, RpPlayer> PLAYERS = new HashMap<>();
+    @JsonIgnore
     private final Player player;
     private final UUID uuid;
     private int level;
     private double XP;
-    private double nextLevelXP;
 
     public RpPlayer(final UUID uuid, final double xp, final int level) {
         this.uuid = uuid;
         this.XP = xp;
         this.level = level;
         this.player = Bukkit.getPlayer(uuid);
-        this.nextLevelXP = Methods.nextLevel(this.level);
     }
 
     /**
@@ -54,10 +52,6 @@ public class RpPlayer {
      */
     public int getLevel() {
         return level;
-    }
-
-    public double getNextLevelXP() {
-        return this.nextLevelXP;
     }
 
     /**
@@ -116,6 +110,20 @@ public class RpPlayer {
         PLAYERS.put(player.getUUID(), player);
     }
 
+//    public void fillMap() {
+//        for (CoreAbility ability : CoreAbility.getAbilities()) {
+//                Field[] fields = ability.getClass().getDeclaredFields();
+//                for (Field field : fields) {
+//                    if (field.isAnnotationPresent(Attribute.class)) {
+//                        Attribute attribute = field.getAnnotation(Attribute.class);
+//                        String attributeName = attribute.value();
+//                        field.setAccessible(true);
+//                        abilityAttributesMap.put(attributeName, 1.0);
+//                    }
+//                }
+//            }
+//        }
+
     public static RpPlayer getRpPlayer(UUID uuid) {
         return PLAYERS.get(uuid);
     }
@@ -126,82 +134,5 @@ public class RpPlayer {
 
     public static Map<UUID, RpPlayer> getPlayers() {
         return PLAYERS;
-    }
-
-    public String getGainedXp() {
-        double xp = this.getXp();
-        double nextLevelXP = this.getNextLevelXP();
-        return String.valueOf(nextLevelXP - xp);
-    }
-
-    //ATTRIBUTE PART
-
-    /**
-     * Set the ability attributes for a specific ability.
-     *
-     * @param abilityName Name of the ability (case-insensitive).
-     * @param speed       Speed attribute value.
-     * @param damage      Damage attribute value.
-     * @param range       Range attribute value.
-     */
-    public void setAbilityAttributes(String abilityName, int speed, int damage, int range) {
-        abilityAttributesMap.put(abilityName.toLowerCase(), new AbilityAttributes(speed, damage, range));
-    }
-
-    /**
-     * Get the speed attribute for a specific ability.
-     *
-     * @param abilityName Name of the ability (case-insensitive).
-     * @return Speed attribute value.
-     */
-    public int getAbilitySpeed(String abilityName) {
-        AbilityAttributes attributes = abilityAttributesMap.get(abilityName.toLowerCase());
-        return (attributes != null) ? attributes.getSpeed() : 0;
-    }
-
-    /**
-     * Get the damage attribute for a specific ability.
-     *
-     * @param abilityName Name of the ability (case-insensitive).
-     * @return Damage attribute value.
-     */
-    public int getAbilityDamage(String abilityName) {
-        AbilityAttributes attributes = abilityAttributesMap.get(abilityName.toLowerCase());
-        return (attributes != null) ? attributes.getDamage() : 0;
-    }
-
-    /**
-     * Get the range attribute for a specific ability.
-     *
-     * @param abilityName Name of the ability (case-insensitive).
-     * @return Range attribute value.
-     */
-    public int getAbilityRange(String abilityName) {
-        AbilityAttributes attributes = abilityAttributesMap.get(abilityName.toLowerCase());
-        return (attributes != null) ? attributes.getRange() : 0;
-    }
-
-    private static class AbilityAttributes {
-        private final int speed;
-        private final int damage;
-        private final int range;
-
-        public AbilityAttributes(int speed, int damage, int range) {
-            this.speed = speed;
-            this.damage = damage;
-            this.range = range;
-        }
-
-        public int getSpeed() {
-            return speed;
-        }
-
-        public int getDamage() {
-            return damage;
-        }
-
-        public int getRange() {
-            return range;
-        }
     }
 }
