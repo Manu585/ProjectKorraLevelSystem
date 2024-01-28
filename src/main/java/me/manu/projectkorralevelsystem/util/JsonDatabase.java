@@ -15,8 +15,13 @@ public class JsonDatabase {
     private static final String PLUGIN_FOLDER = "plugins";
     private static final String PLUGIN_NAME = "ProjectKorraLevelSystem";
     private static final String DATABASE_FILE_NAME = "player_data.json";
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
     public static File databaseFile;
+
+    public JsonDatabase(File databaseFile) {
+        this.mapper = new ObjectMapper();
+        this.databaseFile = databaseFile;
+    }
 
 
     public static void createDB() {
@@ -70,16 +75,6 @@ public class JsonDatabase {
         }
     }
 
-    public void addAttribute(UUID uuid, String abilityName, String attributeName, double modifier) {
-        Map<String, Double> attributes = getPlayerAttributes(uuid);
-        if (attributes == null) {
-            attributes = new HashMap<>();
-        }
-        String key = abilityName + "_" + attributeName;
-        attributes.put(key, modifier);
-        savePlayerAttributes(uuid, attributes);
-    }
-
     public void updatePlayer(RpPlayer rpPlayer) {
         try {
             mapper.writeValue(databaseFile, rpPlayer);
@@ -92,22 +87,36 @@ public class JsonDatabase {
         return databaseFile;
     }
 
-    private Map<String, Double> getPlayerAttributes(UUID uuid) {
+    public void addAttribute(RpPlayer rpPlayer, String abilityName, String attributeName, double modifier) {
+        Map<String, Double> attributes = rpPlayer.getAbilityAttributesMap();
+        if (attributes == null) {
+            attributes = new HashMap<>();
+        }
+        String key = abilityName + "_" + attributeName;
+        attributes.put(key, modifier);
+        savePlayerAttributes(rpPlayer.getUUID(), attributes);
+    }
+
+    public Map<UUID, Map<String, Double>> loadPlayerAttributes() {
         try {
-            if (databaseFile.exists()) {
-                Map<UUID, Map<String, Double>> playerData = mapper.readValue(databaseFile, new TypeReference<Map<UUID, Map<String, Double>>>() {});
-                return playerData.get(uuid);
+            if (databaseFile.exists() && databaseFile.length() > 0) {
+                return mapper.readValue(databaseFile, new TypeReference<Map<UUID, Map<String, Double>>>() {});
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return new HashMap<>();
     }
 
-    private void savePlayerAttributes(UUID uuid, Map<String, Double> attributes) {
+    public Map<String, Double> getPlayerAttributes(UUID uuid) {
+        Map<UUID, Map<String, Double>> playerData = loadPlayerAttributes();
+        return playerData.getOrDefault(uuid, new HashMap<>());
+    }
+
+    public void savePlayerAttributes(UUID uuid, Map<String, Double> attributes) {
+        Map<UUID, Map<String, Double>> playerData = loadPlayerAttributes();
+        playerData.put(uuid, attributes);
         try {
-            Map<UUID, Map<String, Double>> playerData = new HashMap<>();
-            playerData.put(uuid, attributes);
             mapper.writeValue(databaseFile, playerData);
         } catch (IOException e) {
             e.printStackTrace();

@@ -2,8 +2,11 @@ package me.manu.projectkorralevelsystem;
 
 import me.manu.projectkorralevelsystem.listener.Listeners;
 import me.manu.projectkorralevelsystem.menu.MenuManager;
+import me.manu.projectkorralevelsystem.rpplayer.RpPlayer;
 import me.manu.projectkorralevelsystem.util.JsonDatabase;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ProjectKorraLevelSystem extends JavaPlugin {
@@ -15,7 +18,6 @@ public final class ProjectKorraLevelSystem extends JavaPlugin {
     public void onEnable() {
         instance = this;
         MenuManager.initMenus();
-//      DatabaseUtil.createDB();
         JsonDatabase.createDB();
 
 //      new ConfigManager();
@@ -30,11 +32,12 @@ public final class ProjectKorraLevelSystem extends JavaPlugin {
     @Override
     public void onDisable() {
         stopMessage();
-//        for (Player p : Bukkit.getOnlinePlayers()) {
-//            RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
-//            assert rpPlayer != null;
-//            DatabaseUtil.savePlayer(rpPlayer);
-//        }
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            JsonDatabase db = new JsonDatabase(JsonDatabase.databaseFile);
+            RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
+            assert rpPlayer != null;
+            db.savePlayer(rpPlayer);
+        }
     }
 
     void registerEvents() {
@@ -43,16 +46,16 @@ public final class ProjectKorraLevelSystem extends JavaPlugin {
 
     void startMessage() {
         getServer().getConsoleSender().sendMessage("+-+----+------+------+----+-+");
-        getServer().getConsoleSender().sendMessage("|  PK LEVEL SYSTEM v1.0.1   |");
-        getServer().getConsoleSender().sendMessage("|  Made by: Manu and Finn   |");
+        getServer().getConsoleSender().sendMessage("|  PK LEVEL SYSTEM v1.0.0   |");
+        getServer().getConsoleSender().sendMessage("|       Made by: Manu       |");
         getServer().getConsoleSender().sendMessage("|    Powered by RavCraft    |");
         getServer().getConsoleSender().sendMessage("+-+----+------+------+----+-+");
     }
 
     void stopMessage() {
         getServer().getConsoleSender().sendMessage("+-+----+------+------+----+-+");
-        getServer().getConsoleSender().sendMessage("|  PK LEVEL SYSTEM v1.0.1   |");
-        getServer().getConsoleSender().sendMessage("|  Made by: Manu and Finn   |");
+        getServer().getConsoleSender().sendMessage("|  PK LEVEL SYSTEM v1.0.0   |");
+        getServer().getConsoleSender().sendMessage("|       Made by: Manu       |");
         getServer().getConsoleSender().sendMessage("|    Powered by RavCraft    |");
         getServer().getConsoleSender().sendMessage("+-+----+------+------+----+-+");
     }

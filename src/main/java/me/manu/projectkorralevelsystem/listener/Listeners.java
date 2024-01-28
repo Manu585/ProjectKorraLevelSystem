@@ -2,9 +2,7 @@ package me.manu.projectkorralevelsystem.listener;
 
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import com.projectkorra.projectkorra.event.AbilityStartEvent;
-import me.manu.projectkorralevelsystem.ProjectKorraLevelSystem;
 import me.manu.projectkorralevelsystem.levelmanager.LevelManager;
-import me.manu.projectkorralevelsystem.menu.MenuManager;
 import me.manu.projectkorralevelsystem.methods.Methods;
 import me.manu.projectkorralevelsystem.rpevents.RpPlayerLevelChangeEvent;
 import me.manu.projectkorralevelsystem.rpevents.RpPlayerXPChangeEvent;
@@ -16,51 +14,62 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class Listeners implements Listener {
+    private final JsonDatabase jsonDatabase;
 
-    @EventHandler
-    public void onStart(AbilityStartEvent event) {
-        CoreAbility ability = (CoreAbility) event.getAbility();
-        Player p = ability.getPlayer();
-        RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
-
+    public Listeners() {
+        this.jsonDatabase = new JsonDatabase(JsonDatabase.databaseFile);
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        JsonDatabase db = new JsonDatabase();
-        db.addAttribute(p.getUniqueId(), "FireBlast", "speed", 1.5);
-        if (!db.playerExists(RpPlayer.getRpPlayer(p.getUniqueId()))) {
-            RpPlayer rpPlayer = new RpPlayer(p.getUniqueId(), 0.0, 1);
-            RpPlayer.registerRpPlayer(rpPlayer);
-            db.addPlayer(rpPlayer);
-        } else {
-            ProjectKorraLevelSystem.getInstance().getLogger().info("Player already exists in database!");
+        loadAndSavePlayerAttributes(p.getUniqueId());
+    }
+
+    private void loadAndSavePlayerAttributes(UUID playerUUID) {
+        Map<String, Double> playerAttributes = jsonDatabase.getPlayerAttributes(playerUUID);
+
+        if (playerAttributes == null) {
+            playerAttributes = new HashMap<>();
+            // Add default attributes or perform any necessary initialization
         }
 
+        RpPlayer rpPlayer = RpPlayer.getRpPlayer(playerUUID);
+        if (rpPlayer != null) {
+            rpPlayer.setAbilityAttributesMap(playerAttributes);
+        } else {
+            rpPlayer = new RpPlayer(playerUUID, 0.0, 1); // Example initialization, adjust as needed
+            rpPlayer.setAbilityAttributesMap(playerAttributes);
+            RpPlayer.registerRpPlayer(rpPlayer);
+            jsonDatabase.addPlayer(rpPlayer);
+        }
 
-        p.openInventory(MenuManager.mainMenu.getInventory());
-        //DatabaseUtil.getPlayer(p.getUniqueId());
+        jsonDatabase.savePlayerAttributes(playerUUID, playerAttributes);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         RpPlayer rpPlayer = RpPlayer.getRpPlayer(player.getUniqueId());
-//        if (rpPlayer != null) {
-//            DatabaseUtil.savePlayer(rpPlayer);
-//            RpPlayer.getPlayers().remove(player.getUniqueId());
-//        }
+        jsonDatabase.savePlayerAttributes(player.getUniqueId(), rpPlayer.getAbilityAttributesMap());
+        jsonDatabase.savePlayer(rpPlayer);
     }
 
     @EventHandler
-    public void playerKill(PlayerDeathEvent e) {
-        Player p = e.getEntity();
+    public void onBend(AbilityStartEvent e) {
+        CoreAbility ability = (CoreAbility) e.getAbility();
+        Player p = ability.getPlayer();
+        RpPlayer rpPlayer = RpPlayer.getRpPlayer(p.getUniqueId());
+        p.sendMessage("YeahYeah");
+        jsonDatabase.addAttribute(rpPlayer, "FireBlast", "speed", 1.5);
     }
 
     @EventHandler

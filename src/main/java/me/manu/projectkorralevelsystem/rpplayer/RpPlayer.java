@@ -20,7 +20,9 @@ public class RpPlayer {
     private int level;
     private double XP;
 
-    public RpPlayer(final UUID uuid, final double xp, final int level) {
+    private Map<String, Double> abilityAttributesMap = new HashMap<>();
+
+    public RpPlayer(final UUID uuid, double xp, int level) {
         this.uuid = uuid;
         this.XP = xp;
         this.level = level;
@@ -134,5 +136,13 @@ public class RpPlayer {
 
     public static Map<UUID, RpPlayer> getPlayers() {
         return PLAYERS;
+    }
+
+    public Map<String, Double> getAbilityAttributesMap() {
+        return abilityAttributesMap;
+    }
+
+    public void setAbilityAttributesMap(Map<String, Double> abilityAttributesMap) {
+        this.abilityAttributesMap = abilityAttributesMap;
     }
 }
